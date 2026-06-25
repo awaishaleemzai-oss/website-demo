@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All Resources — Sab Seekhein</title>
+  <meta name="description" content="Search every free resource on Sab Seekhein, across all stages of education.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to main content</a>
+
+  <div id="site-header"></div>
+
+  <main id="main">
+    <section class="page-hero">
+      <div class="container">
+        <p class="breadcrumb"><a href="index.html">Home</a> / All Resources</p>
+        <span class="kicker">Full directory</span>
+        <h1>Every free resource, in one place.</h1>
+        <p>Search by subject, platform, or stage. Everything here is free to access — filters just help you narrow down what fits your level.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="filter-bar">
+          <input type="search" id="global-search" placeholder="Search by name, subject, or keyword…" aria-label="Search all resources">
+        </div>
+        <div class="filter-bar" id="stage-chips" role="group" aria-label="Filter by stage"></div>
+        <p class="results-meta" id="global-results-meta"></p>
+        <div id="global-grid"></div>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/cards.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const stages = SITE_DATA.stages;
+
+      // Flatten all resources with their stage label attached
+      const allResources = [];
+      stages.forEach(stage => {
+        stage.resources.forEach(r => {
+          allResources.push(Object.assign({}, r, { stageId: stage.id, stageLabel: stage.label }));
+        });
+      });
+
+      let activeStage = "all";
+
+      // Build stage filter chips
+      const chipsMount = document.getElementById("stage-chips");
+      const stageButtons = [{ id: "all", label: "All stages" }].concat(
+        stages.map(s => ({ id: s.id, label: s.label }))
+      );
+      chipsMount.innerHTML = stageButtons.map(s =>
+        `<button class="filter-chip${s.id === "all" ? " is-active" : ""}" data-stage="${s.id}" type="button">${s.label}</button>`
+      ).join("");
+
+      const grid = document.getElementById("global-grid");
+      const meta = document.getElementById("global-results-meta");
+      const search = document.getElementById("global-search");
+
+      function render() {
+        const term = search.value.trim().toLowerCase();
+        const filtered = allResources.filter(r => {
+          const stageMatch = activeStage === "all" || r.stageId === activeStage;
+          if (!stageMatch) return false;
+          if (!term) return true;
+          const haystack = [r.name, r.type, r.desc, r.stageLabel, ...(r.tags || [])].join(" ").toLowerCase();
+          return haystack.includes(term);
+        });
+        meta.textContent = `${filtered.length} of ${allResources.length} resources`;
+        grid.innerHTML = SabSeekheinCards.renderResourceGrid(
+          filtered.map(r => ({ name: r.name, type: r.type, cost: r.cost, desc: r.desc, link: r.link, tags: r.tags })),
+        );
+        // Re-attach stage badges manually since helper doesn't know per-card stage in bulk mode
+        const cards = grid.querySelectorAll(".resource-card");
+        cards.forEach((card, i) => {
+          const tagRow = card.querySelector(".tag-row");
+          if (tagRow && filtered[i]) {
+            const badge = document.createElement("span");
+            badge.className = "tag";
+            badge.style.background = "var(--green-soft)";
+            badge.style.borderColor = "var(--green)";
+            badge.style.color = "var(--green-deep)";
+            badge.textContent = filtered[i].stageLabel;
+            tagRow.insertBefore(badge, tagRow.firstChild);
+          }
+        });
+      }
+
+      chipsMount.addEventListener("click", (e) => {
+        const btn = e.target.closest(".filter-chip");
+        if (!btn) return;
+        activeStage = btn.dataset.stage;
+        chipsMount.querySelectorAll(".filter-chip").forEach(c => c.classList.remove("is-active"));
+        btn.classList.add("is-active");
+        render();
+      });
+
+      search.addEventListener("input", render);
+      render();
+    });
+  </script>
+</body>
+</html>

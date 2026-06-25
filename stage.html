@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stage — Sab Seekhein</title>
+  <meta name="description" content="Free resources for your stage of education in Pakistan.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to main content</a>
+
+  <div id="site-header"></div>
+
+  <main id="main">
+    <section class="page-hero" id="stage-page-hero">
+      <div class="container">
+        <p class="breadcrumb"><a href="index.html">Home</a> / <span id="breadcrumb-label">Stage</span></p>
+        <span class="kicker" id="stage-kicker">Stage</span>
+        <h1 id="stage-title">Loading…</h1>
+        <p id="stage-tagline-text"></p>
+      </div>
+    </section>
+
+    <section class="section-tight">
+      <div class="container">
+        <nav class="path-nav" aria-label="Education stages" id="stage-path-nav"></nav>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top:0;">
+      <div class="container">
+        <div class="filter-bar">
+          <input type="search" id="stage-search" placeholder="Search within this stage (e.g. Math, past papers, app)" aria-label="Search resources in this stage">
+        </div>
+        <p class="results-meta" id="stage-results-meta"></p>
+        <div id="stage-grid"></div>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/cards.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const stages = SITE_DATA.stages;
+      let stageId = SabSeekhein.getQueryParam("id") || "primary";
+      let stage = stages.find(s => s.id === stageId);
+      if (!stage) stage = stages[0];
+
+      document.title = `${stage.label} (${stage.gradeRange}) — Sab Seekhein`;
+      document.getElementById("breadcrumb-label").textContent = stage.label;
+      document.getElementById("stage-kicker").textContent = `Stage ${stage.rung} · ${stage.gradeRange}`;
+      document.getElementById("stage-title").textContent = stage.label + " Resources";
+      document.getElementById("stage-tagline-text").textContent = stage.tagline;
+      document.getElementById("stage-page-hero").style.setProperty("--stage-color", stage.color);
+
+      // Path nav with current stage highlighted
+      const pathNav = document.getElementById("stage-path-nav");
+      pathNav.innerHTML = stages.map(s => `
+        <a href="stage.html?id=${s.id}" class="${s.id === stage.id ? "is-current" : ""}">
+          <span class="rung-num">${s.rung}</span>
+          <span class="rung-label">${s.label}</span>
+          <span class="rung-range">${s.gradeRange}</span>
+        </a>
+      `).join("");
+
+      const grid = document.getElementById("stage-grid");
+      const meta = document.getElementById("stage-results-meta");
+      const search = document.getElementById("stage-search");
+
+      function renderList(filterText) {
+        const term = (filterText || "").trim().toLowerCase();
+        const filtered = stage.resources.filter(r => {
+          if (!term) return true;
+          const haystack = [r.name, r.type, r.desc, ...(r.tags || [])].join(" ").toLowerCase();
+          return haystack.includes(term);
+        });
+        meta.textContent = `${filtered.length} of ${stage.resources.length} resources`;
+        grid.innerHTML = SabSeekheinCards.renderResourceGrid(filtered);
+      }
+
+      search.addEventListener("input", () => renderList(search.value));
+      renderList("");
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scholarships & Financial Aid — Sab Seekhein</title>
+  <meta name="description" content="Free, real scholarship and financial aid programmes for Pakistani students.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to main content</a>
+
+  <div id="site-header"></div>
+
+  <main id="main">
+    <section class="page-hero">
+      <div class="container">
+        <p class="breadcrumb"><a href="index.html">Home</a> / Scholarships</p>
+        <span class="kicker">Money for school, not just courses</span>
+        <h1>Scholarships and financial aid worth applying for.</h1>
+        <p>These are real, currently active programmes. Eligibility and deadlines change — always confirm details on the official page before applying.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="scholarship-list" id="scholarship-list"></div>
+      </div>
+    </section>
+
+    <section class="section section-alt section-tight">
+      <div class="container">
+        <div class="callout">
+          <div>
+            <h3>Applying for a scholarship?</h3>
+            <p>Keep your academic records, domicile certificate, and income certificate ready in advance — most delays happen at the documentation stage, not the application itself.</p>
+          </div>
+          <a href="https://hec.gov.pk/english/scholarshipsgrants/Pages/default.aspx" target="_blank" rel="noopener" class="btn btn-primary">See HEC scholarship portal</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const mount = document.getElementById("scholarship-list");
+      mount.innerHTML = SITE_DATA.scholarships.map(s => `
+        <div class="scholarship-item">
+          <div>
+            <h4>${SabSeekhein.escapeHtml(s.name)}</h4>
+            <p>${SabSeekhein.escapeHtml(s.desc)}</p>
+          </div>
+          <a href="${s.link}" target="_blank" rel="noopener" class="btn btn-ghost">View details</a>
+        </div>
+      `).join("");
+    });
+  </script>
+</body>
+</html>

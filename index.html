@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sab Seekhein — Free Education for Pakistani Students, Class 1 to University</title>
+  <meta name="description" content="A free directory of genuinely free learning resources for Pakistani students — from primary school through university. No subscriptions, no logins required.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to main content</a>
+
+  <div id="site-header"></div>
+
+  <main id="main">
+
+    <!-- ===================== HERO ===================== -->
+    <section class="hero">
+      <div class="container">
+        <div>
+          <span class="hero-eyebrow">Free. Always. No catch.</span>
+          <h1>Education shouldn't have a <em>price tag</em> in Pakistan.</h1>
+          <p class="hero-sub">
+            Sab Seekhein collects the best free courses, video lessons, past papers, and scholarships
+            for every stage of school and university — organised the way a Pakistani student's
+            journey actually unfolds, from Class 1 to a finished degree.
+          </p>
+          <div class="hero-actions">
+            <a href="#path" class="btn btn-primary">Find your stage</a>
+            <a href="resources.html" class="btn btn-ghost">Browse all resources</a>
+          </div>
+        </div>
+        <div class="hero-ladder" aria-hidden="true">
+          <div class="rung"><span class="num">05</span><span class="name">Higher Education</span><span class="range">Undergrad &amp; up</span></div>
+          <div class="rung"><span class="num">04</span><span class="name">Intermediate</span><span class="range">Class 11&ndash;12</span></div>
+          <div class="rung"><span class="num">03</span><span class="name">Secondary</span><span class="range">Class 9&ndash;10</span></div>
+          <div class="rung"><span class="num">02</span><span class="name">Middle</span><span class="range">Class 6&ndash;8</span></div>
+          <div class="rung"><span class="num">01</span><span class="name">Primary</span><span class="range">Class 1&ndash;5</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== STATS ===================== -->
+    <section class="stats-strip">
+      <div class="container">
+        <div class="stat"><span class="num" id="stat-resources">—</span><div class="label">Free resources listed</div></div>
+        <div class="stat"><span class="num">5</span><div class="label">Stages, Class 1 to university</div></div>
+        <div class="stat"><span class="num">0</span><div class="label">Subscriptions required</div></div>
+        <div class="stat"><span class="num" id="stat-scholarships">—</span><div class="label">Scholarship programmes</div></div>
+      </div>
+    </section>
+
+    <!-- ===================== PATH NAVIGATOR ===================== -->
+    <section class="section" id="path">
+      <div class="container">
+        <div class="section-head">
+          <span class="kicker">Your education, mapped</span>
+          <h2>Pick the rung you're standing on.</h2>
+          <p>Every stage links to video lessons, past papers, and certificate courses that cost nothing — picked because they're actually used by Pakistani students, not just well-marketed.</p>
+        </div>
+        <nav class="path-nav" aria-label="Education stages" id="home-path-nav"></nav>
+      </div>
+    </section>
+
+    <!-- ===================== FEATURED PER-STAGE PREVIEW ===================== -->
+    <section class="section section-alt" id="stage-preview">
+      <div class="container" id="stage-preview-mount">
+        <!-- populated by JS: one row of 2 example resources per stage -->
+      </div>
+    </section>
+
+    <!-- ===================== HOW IT WORKS ===================== -->
+    <section class="section">
+      <div class="container">
+        <div class="section-head">
+          <span class="kicker">How to use this site</span>
+          <h2>Three steps. No account needed.</h2>
+        </div>
+        <div class="steps">
+          <div class="step">
+            <span class="step-num">01</span>
+            <h3>Find your stage</h3>
+            <p>Click the rung that matches your class — Primary, Middle, Secondary, Intermediate, or Higher Education.</p>
+          </div>
+          <div class="step">
+            <span class="step-num">02</span>
+            <h3>Open a resource</h3>
+            <p>Every card links straight to the lesson, course, or past-paper archive — no sign-up wall before you can even see it.</p>
+          </div>
+          <div class="step">
+            <span class="step-num">03</span>
+            <h3>Check scholarships</h3>
+            <p>If you're heading to university, look at our scholarships page — many are easy to miss and don't require connections, just paperwork.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== CALLOUT ===================== -->
+    <section class="section section-tight">
+      <div class="container">
+        <div class="callout">
+          <div>
+            <h3>Know a free resource we're missing?</h3>
+            <p>This list grows from suggestions. If it's genuinely free and useful to Pakistani students, tell us and we'll add it.</p>
+          </div>
+          <a href="contribute.html" class="btn btn-primary">Suggest a resource</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/cards.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const stages = SITE_DATA.stages;
+
+      // Stats
+      const totalResources = stages.reduce((sum, s) => sum + s.resources.length, 0);
+      document.getElementById("stat-resources").textContent = totalResources + "+";
+      document.getElementById("stat-scholarships").textContent = SITE_DATA.scholarships.length;
+
+      // Path nav
+      const pathNav = document.getElementById("home-path-nav");
+      pathNav.innerHTML = stages.map(s => `
+        <a href="stage.html?id=${s.id}">
+          <span class="rung-num">${s.rung}</span>
+          <span class="rung-label">${s.label}</span>
+          <span class="rung-range">${s.gradeRange}</span>
+        </a>
+      `).join("");
+
+      // Stage previews — 2 resources each
+      const mount = document.getElementById("stage-preview-mount");
+      mount.innerHTML = stages.map(stage => `
+        <div class="stage-block" style="--stage-color:${stage.color}">
+          <div class="stage-head">
+            <span class="rung-tag">${stage.rung}</span>
+            <h3>${stage.label}</h3>
+            <span class="stage-grade">${stage.gradeRange}</span>
+          </div>
+          <p class="stage-tagline">${stage.tagline}</p>
+          ${SabSeekheinCards.renderResourceGrid(stage.resources.slice(0, 3))}
+          <div style="margin-top:18px;">
+            <a href="stage.html?id=${stage.id}" class="btn btn-ghost">See all ${stage.label} resources &rarr;</a>
+          </div>
+        </div>
+      `).join("");
+    });
+  </script>
+</body>
+</html>
